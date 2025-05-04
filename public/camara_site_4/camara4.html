@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Placas de Pedra</title>
+  <style>
+    body {
+      font-family: 'Georgia', serif;
+      background: #3b0d1a;
+      color: #fff;
+      text-align: center;
+      padding: 50px;
+    }
+    h1 {
+      font-size: 2.5rem;
+    }
+    .frame {
+      display: inline-block;
+      width: 400px;
+      height: 400px;
+      margin: 20px;
+      border: 2px solid #5a2020;
+      background-color: #444;
+      position: relative;
+      cursor: pointer;
+    }
+    .frame img {
+      width: 100%;
+      height: 100%;
+    }
+    /* Número de ordem */
+    .frame .order-num {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      background: rgba(0, 0, 0, 0.7);
+      color: #90ee90;
+      font-size: 1.2rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .message {
+      font-size: 18px;
+      margin-top: 30px;
+      visibility: hidden;
+    }
+    .message.success {
+      color: #90ee90;
+    }
+    .message.error {
+      color: #ff6b6b;
+    }
+    .frame img:hover {
+      opacity: 0.8;
+    }
+    #confirmBtn, #resetBtn {
+      display: none;
+      margin: 10px 5px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #20521a;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #confirmBtn:hover, #resetBtn:hover {
+      background-color: #3b6b34;
+    }
+  </style>
+</head>
+<body>
+  <h1>Placas de Pedra</h1>
+  <p>“A história só é real quando lembrada na ordem certa.”</p>
+  <div>
+    <div class="frame" id="frame1" onclick="record(1)">
+      <img src="assets/image3.png" alt="Cena 1" />
+    </div>
+    <div class="frame" id="frame2" onclick="record(2)">
+      <img src="assets/image1.png" alt="Cena 2" />
+    </div>
+    <div class="frame" id="frame3" onclick="record(3)">
+      <img src="assets/image2.png" alt="Cena 3" />
+    </div>
+    <div class="frame" id="frame4" onclick="record(4)">
+      <img src="assets/image4.png" alt="Cena 4" />
+    </div>
+  </div>
+
+  <!-- Botões de confirmar e reiniciar -->
+  <button id="confirmBtn" onclick="checkOrder()">Confirmar Ordem</button>
+  <button id="resetBtn"   onclick="resetOrder()">Reiniciar Ordem</button>
+  
+  <!-- Mensagens de sucesso e erro -->
+  <div id="successMsg" class="message success">✅ A Luz Vermelha acendeu!</div>
+  <div id="errorMsg"   class="message error">❌ Ordem incorreta. Um mecanismo de choque te acerta assim que você empurra a ultima placa.</div>
+
+  <script>
+    const correctOrder = [2, 3, 1, 4];
+    let clickedFrames = [];
+
+    function record(id) {
+      if (clickedFrames.length < 4) {
+        clickedFrames.push(id);
+        // Adiciona/atualiza badge de número
+        const frameEl = document.getElementById('frame' + id);
+        let badge = frameEl.querySelector('.order-num');
+        if (!badge) {
+          badge = document.createElement('div');
+          badge.className = 'order-num';
+          frameEl.appendChild(badge);
+        }
+        badge.textContent = clickedFrames.length;
+
+        if (clickedFrames.length === 4) {
+          document.getElementById('confirmBtn').style.display = 'inline-block';
+          document.getElementById('resetBtn').style.display   = 'inline-block';
+        }
+      }
+    }
+
+    function checkOrder() {
+      const ok = JSON.stringify(clickedFrames) === JSON.stringify(correctOrder);
+      document.getElementById('successMsg').style.visibility = ok ? 'visible' : 'hidden';
+      document.getElementById('errorMsg').style.visibility   = ok ? 'hidden'  : 'visible';
+      // após verificar, esconde o botão de confirmar
+      setTimeout(() => {
+        document.getElementById('confirmBtn').style.display = 'none';
+      }, 500);
+    }
+
+    function resetOrder() {
+      clickedFrames = [];
+      // Remove todos os badges
+      document.querySelectorAll('.order-num').forEach(b => b.remove());
+      document.getElementById('confirmBtn').style.display = 'none';
+      document.getElementById('resetBtn').style.display   = 'none';
+      document.getElementById('successMsg').style.visibility = 'hidden';
+      document.getElementById('errorMsg').style.visibility   = 'hidden';
+    }
+  </script>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+
+  // Exemplo: dispara ação ao clicar em qualquer botão
+  document.addEventListener('click', (event) => {
+    if (event.target.tagName === 'BUTTON') {
+      socket.emit('puzzle-action', { action: 'botão clicado', id: event.target.id || 'sem-id' });
+    }
+  });
+
+  // Exibe mensagem quando outros clicam
+  socket.on('puzzle-update', data => {
+    const box = document.createElement('div');
+    box.style.background = '#def';
+    box.style.marginTop = '1em';
+    box.style.padding = '0.5em';
+    box.textContent = `[AO VIVO] ${data.action} (${data.id})`;
+    document.body.appendChild(box);
+  });
+</script>
+
+</body>
+</html>

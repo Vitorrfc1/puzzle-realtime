@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Runas da Clareira</title>
+  <link rel="stylesheet" href="clareira2.css" />
+</head>
+<body>
+  <h1>Runas no Chão</h1>
+  <p>"Do começo ao fim, o caminho do céu ilumina o passo do tempo."</p>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+
+  // Exemplo: dispara ação ao clicar em qualquer botão
+  document.addEventListener('click', (event) => {
+    if (event.target.tagName === 'BUTTON') {
+      socket.emit('puzzle-action', { action: 'botão clicado', id: event.target.id || 'sem-id' });
+    }
+  });
+
+  // Exibe mensagem quando outros clicam
+  socket.on('puzzle-update', data => {
+    const box = document.createElement('div');
+    box.style.background = '#def';
+    box.style.marginTop = '1em';
+    box.style.padding = '0.5em';
+    box.textContent = `[AO VIVO] ${data.action} (${data.id})`;
+    document.body.appendChild(box);
+  });
+</script>
+
+</body>
+</html>

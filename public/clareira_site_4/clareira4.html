@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clareira - Puzzle da Memória</title>
+  <style>
+    body {
+      font-family: 'Georgia', serif;
+      background: #3b0d1a;
+      color: #fff;
+      text-align: center;
+      padding: 50px;
+    }
+    h1 {
+      font-size: 2.5rem;
+    }
+    .message {
+      font-size: 18px;
+      margin-top: 30px;
+    }
+    #orderInput {
+      font-size: 18px;
+      padding: 10px;
+      margin-top: 20px;
+      width: 200px;
+      text-align: center;
+      border-radius: 5px;
+      border: 2px solid #5a2020;
+    }
+    button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #20521a;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #3b6b34;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+    .correct {
+      color: #90ee90;
+    }
+    .incorrect {
+      color: #ff6b6b;
+    }
+  </style>
+</head>
+<body>
+  <h1>Puzzle da Memória - Clareira</h1>
+  <p>“Tudo começou com um presente, que despertou um poder. O chão cedeu à força oculta, e a fuga foi o último dever.”</p>
+  
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+
+  // Exemplo: dispara ação ao clicar em qualquer botão
+  document.addEventListener('click', (event) => {
+    if (event.target.tagName === 'BUTTON') {
+      socket.emit('puzzle-action', { action: 'botão clicado', id: event.target.id || 'sem-id' });
+    }
+  });
+
+  // Exibe mensagem quando outros clicam
+  socket.on('puzzle-update', data => {
+    const box = document.createElement('div');
+    box.style.background = '#def';
+    box.style.marginTop = '1em';
+    box.style.padding = '0.5em';
+    box.textContent = `[AO VIVO] ${data.action} (${data.id})`;
+    document.body.appendChild(box);
+  });
+</script>
+
+</body>
+</html>

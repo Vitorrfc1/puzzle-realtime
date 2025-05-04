@@ -1,0 +1,71 @@
+body {
+  background-color: #0d1b2a;
+  color: #dce3ec;
+  font-family: 'Georgia', serif;
+  text-align: center;
+  padding: 20px;
+  background-image: url('https://cdn.pixabay.com/photo/2020/10/24/09/53/cave-5682037_1280.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+h1 {
+  font-size: 2em;
+  margin-bottom: 10px;
+  color: #a8d0e6;
+  text-shadow: 0 0 10px #3fc1c9;
+}
+
+#board {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 20px 0;
+  gap: 15px;
+}
+
+.tile {
+  background: #1b263b;
+  color: #e0fbfc;
+  border: 2px solid #415a77;
+  border-radius: 10px;
+  padding: 20px;
+  width: 100px;
+  height: 100px;
+  font-size: 1.2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px #3fc1c9;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tile.selected {
+  background-color: #3fc1c9;
+  color: #0d1b2a;
+  font-weight: bold;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 1em;
+  background-color: #3fc1c9;
+  color: #0d1b2a;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+@keyframes shake {
+  0% { transform: translate(0px, 0px); }
+  20% { transform: translate(-5px, 0px); }
+  40% { transform: translate(5px, 0px); }
+  60% { transform: translate(-5px, 0px); }
+  80% { transform: translate(5px, 0px); }
+  100% { transform: translate(0px, 0px); }
+}
+
+.shake {
+  animation: shake 0.4s ease;
+}

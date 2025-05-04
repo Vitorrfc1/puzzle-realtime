@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Runas</title>
+  <link rel="stylesheet" href="camara.css" />
+</head>
+<body>
+  <h1>Decifre as Runas</h1>
+  <h3>““A ______ do silêncio ______ quando o último ______ se apaga, e a ______ é ______.” ”</h3>
+  <div id="rings-container"></div>
+  <button onclick="checkSolution()">Verificar</button>
+  <div id="message"></div>
+  <script src="camara.js"></script>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+
+  // Exemplo: dispara ação ao clicar em qualquer botão
+  document.addEventListener('click', (event) => {
+    if (event.target.tagName === 'BUTTON') {
+      socket.emit('puzzle-action', { action: 'botão clicado', id: event.target.id || 'sem-id' });
+    }
+  });
+
+  // Exibe mensagem quando outros clicam
+  socket.on('puzzle-update', data => {
+    const box = document.createElement('div');
+    box.style.background = '#def';
+    box.style.marginTop = '1em';
+    box.style.padding = '0.5em';
+    box.textContent = `[AO VIVO] ${data.action} (${data.id})`;
+    document.body.appendChild(box);
+  });
+</script>
+
+</body>
+</html>
